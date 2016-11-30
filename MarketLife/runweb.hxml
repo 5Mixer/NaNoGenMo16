@@ -1,0 +1,4 @@
+-js story.js
+-main Main
+-D js-flatten
+-dce full

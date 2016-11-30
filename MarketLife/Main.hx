@@ -1,5 +1,7 @@
 package ;
 
+import Grammar;
+
 enum Weather {
 	Sunny;
 	Warm;
@@ -11,25 +13,6 @@ typedef Day = {
 	var weather:Weather;
 }
 
-typedef Item = {
-	var name:String;
-	var number:Int;
-	var value:Int;
-}
-
-typedef Job = {
-	var name:String;
-	var buysItems:Array<String>;
-	var sellsItems:Array<Item>;
-}
-
-typedef Character = {
-	var job : Job;
-	var name : String;
-	var money : Int;
-}
-
-
 class Main {
 	var day:Day = {
 		weather : Weather.Sunny
@@ -40,30 +23,30 @@ class Main {
 			name: "farmer",
 			buysItems : [ "Wood", "Bread", "Pig" ],
 			sellsItems : [
-				{ name:"Wheat", number:null, value: 1 },
-				{ name:"Pig", number:1, value: 6 }
+				{ name:"Wheat", pluralIdentifier: "some", value: 1 },
+				{ name:"Pig", pluralIdentifier: "a", value: 6 }
 			],
 		},
 		{
 			name: "baker",
 			buysItems : [ "Wheat" ],
 			sellsItems : [
-				{ name:"Bread", number:1, value: 3 }
+				{ name:"Bread", pluralIdentifier: "some", value: 3 }
 			],
 		},
 		{
 			name: "blacksmith",
 			buysItems : [ "Steel" ],
 			sellsItems : [
-				{ name:"Pickaxe", number:1, value: 5 },
-				{ name:"Hammer", number:1, value: 5 },
+				{ name:"Pickaxe", pluralIdentifier: "a", value: 5},
+				{ name:"Hammer", pluralIdentifier: "a", value: 5 },
 			],
 		},
 		{
 			name: "miner",
 			buysItems : [ "Pickaxe" ],
 			sellsItems : [
-				{ name:"Steel", number:1, value: 5 },
+				{ name:"Steel", pluralIdentifier: "some",value: 5 },
 			],
 		}
 	];
@@ -74,15 +57,31 @@ class Main {
 
 	static function main(){
 		new Main();
+
+
 	}
 
 	function new(){
-		trace("You set up your stall and prepare to sell goods.");
+		var button =  js.Browser.document.createButtonElement();
+  		button.textContent = "New day";
+		button.onclick = function(_){
+			trace("Cku");
+			tick();
+		}
+
+
+		Grammar.out([new BaseGrammarElement("You set up your stall and prepare to sell goods.")]);
 		for (i in 0...15){
 			characters.push(createCharacter());
 		}
+
+		js.Browser.document.getElementById('market').appendChild(button);
+
 		tick();
+
+
 	}
+
 
 	function createCharacter (){
 		var bnames  = [ "Steve", "Harry", "John", "Peter", "Joshua", "Jordan", "Daniel", "Aaron", "Adam", "Jacob", "Kevin", "Matthew", "Liam", "Alexander", "Ethan", "Blake", "Robert", "Tyler"];
@@ -104,12 +103,15 @@ class Main {
 		return {
 			name : name,
 			job: job,
+			inventory: [],
 			money : 5 + Math.round(Math.random() * 15)
 		};
 	}
 
 	function tick(){
 		ticks++;
+
+		Grammar.out([new BaseGrammarElement("<h1>Day "+ticks+"</h1>")]);
 
 		var yesterday = day;
 
@@ -140,23 +142,32 @@ class Main {
 
 		for (character in characters){
 			//character.money --;
-			if (character.money < 1){
+			if (character.money < 3){
 				var victim = characters[Math.floor(Math.random() * characters.length)];
 				var amount:Int = Math.floor(Math.min(Math.max(0,victim.money),Math.floor(Math.random()*6)+1));
 				character.money += amount;
 				victim.money -= amount;
-				trace("Without a single coin, "+character.name+" the "+character.job.name+" stole "+amount+" coins from " + victim.name + " the "+victim.job.name+", leaving them with "+victim.money+" coins!");
+				Grammar.out([new BaseGrammarElement("With not enough coin to buy even bread, "),new CharacterElement(character),new BaseGrammarElement(" the "+character.job.name+" stole "+amount+" coins from "), new CharacterElement(victim), new BaseGrammarElement(" the "+victim.job.name+", leaving them with "+victim.money+" coins!")]);
 			}
 			for (character2 in characters){
 				for (item in character.job.sellsItems){
 
 					for (buys in character2.job.buysItems){
 						if (buys == item.name){
-							if (Math.random() > 0.9*saleLikelyHoodMultiplier) continue;
+							if (Math.random() > 0.4*saleLikelyHoodMultiplier) continue;
 							if (item.value < character2.money){
-								trace(character.name+" the "+character.job.name + " sold " + item.name + " to " + character2.name+" the "+character2.job.name);
+								Grammar.out([new CharacterElement(character),
+											new BaseGrammarElement(" the "+character.job.name + " sold " ),
+											new ItemElement(item),
+											new BaseGrammarElement(" to "),
+											new CharacterElement(character2),
+											new BaseGrammarElement(" the "+character2.job.name)]);
 
 								sales++;
+
+								character.inventory.splice(character.inventory.indexOf(item),1);
+								character2.inventory.push(item);
+
 
 								character2.money -= item.value;
 								character.money  += item.value;
@@ -169,11 +180,20 @@ class Main {
 		}
 
 
-		trace("Today was " + day.weather + ". There was "+sales+" trades.");
+		Grammar.out([new BaseGrammarElement("Today was " + day.weather + ". There was "+sales+" trades.")]);
+		/*if (sales < 18){
+			Grammar.out("Sales were low. Perhaps the market will pick up again soon.");
+		}else if (sales < 30){
+			Grammar.out("Some merchants did well today, but the town was hoping for more profits");
+		}else if (sales < 40){
+			Grammar.out("Many townspeople are happy with the days sales. The pub is full as merchants buy their meals.");
+		}else if (sales < 50){
+			Grammar.out("A wonderful day at the market! The town will remember days like this.");
+		}*/
+		Grammar.out([new BaseGrammarElement("<br><br>")]);
 
-		Sys.sleep(.1);
-
-		if (ticks < 100)
+		if (ticks < tickMax)
 			tick();
 	}
+	var tickMax = 10;
 }

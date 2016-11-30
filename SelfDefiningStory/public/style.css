@@ -1,0 +1,19 @@
+html, body {
+	margin : 0;
+	padding : 0;
+	background-color: #CAEDE3;
+	color: #371C25;
+	font-family: 'Meera Inimai', sans-serif;
+}
+#TopLevelStory {
+	background-color: #A7C4A8;
+	margin-left: 2%;
+	margin-top: 2%;
+	max-width: 92%;
+	height:90%;
+	padding: 2%;
+}
+
+.expand {
+	background-color: rgba(#918670, 0.61);
+}

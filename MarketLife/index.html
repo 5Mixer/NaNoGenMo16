@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<title>The Market Life</title>
+
+		<style>
+			body {
+				background-color: rgb(144, 137, 179);
+			}
+			#market {
+				background-color: rgb(77, 44, 68);
+				font-family: monospace;
+				font-size: 12pt;
+				padding: 30px;
+				margin: 30px;
+				color: rgb(244, 255, 219);
+			}
+
+			.tooltipProvider:hover .tooltip { /* NEW */
+			    display: block;
+			}
+
+			b {
+				background-color: rgb(145, 124, 77);
+			}
+
+			.tooltip {
+			    display: none;  /* NEW */
+			    background: #C8C8C8;
+			    padding: 10px;
+			    position: absolute;
+			    z-index: 1000;
+			    width:200px;
+			    height:auto;
+				color: rgb(32, 29, 30);
+			}
+
+		</style>
+	</head>
+	<body>
+		<div id="market">
+			The market life for me!
+		</div>
+
+		<script src="story.js"></script>
+	</body>
+</html>
