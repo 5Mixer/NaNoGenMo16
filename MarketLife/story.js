@@ -107,22 +107,12 @@ var Main = function() {
 	this.characters = [];
 	this.jobs = [{ name : "farmer", buysItems : ["Wood","Bread","Pig"], sellsItems : [{ name : "Wheat", pluralIdentifier : "some", value : 1},{ name : "Pig", pluralIdentifier : "a", value : 6}]},{ name : "baker", buysItems : ["Wheat"], sellsItems : [{ name : "Bread", pluralIdentifier : "some", value : 3}]},{ name : "blacksmith", buysItems : ["Steel"], sellsItems : [{ name : "Pickaxe", pluralIdentifier : "a", value : 5},{ name : "Hammer", pluralIdentifier : "a", value : 5}]},{ name : "miner", buysItems : ["Pickaxe"], sellsItems : [{ name : "Steel", pluralIdentifier : "some", value : 5}]}];
 	this.day = { weather : Weather.Sunny};
-	var _g = this;
-	var button;
-	var _this = window.document;
-	button = _this.createElement("button");
-	button.textContent = "New day";
-	button.onclick = function(_) {
-		console.log("Cku");
-		_g.tick();
-	};
 	Grammar.out([new BaseGrammarElement("You set up your stall and prepare to sell goods.")]);
-	var _g1 = 0;
-	while(_g1 < 15) {
-		var i = _g1++;
+	var _g = 0;
+	while(_g < 15) {
+		var i = _g++;
 		this.characters.push(this.createCharacter());
 	}
-	window.document.getElementById("market").appendChild(button);
 	this.tick();
 };
 Main.__name__ = true;
@@ -141,6 +131,7 @@ Main.prototype = {
 		return { name : name, job : job, inventory : [], money : 5 + Math.round(Math.random() * 15)};
 	}
 	,tick: function() {
+		var _g = this;
 		this.ticks++;
 		Grammar.out([new BaseGrammarElement("<h1>Day " + this.ticks + "</h1>")]);
 		var yesterday = this.day;
@@ -158,11 +149,11 @@ Main.prototype = {
 		var sales = 0;
 		var saleLikelyHoodMultiplier = 1.0;
 		if(this.day.weather == Weather.Sunny) saleLikelyHoodMultiplier = 1.0; else if(this.day.weather == Weather.Warm) saleLikelyHoodMultiplier = .8; else if(this.day.weather == Weather.Cold) saleLikelyHoodMultiplier = .6; else if(this.day.weather == Weather.Rainy) saleLikelyHoodMultiplier = .5;
-		var _g = 0;
-		var _g1 = this.characters;
-		while(_g < _g1.length) {
-			var character = _g1[_g];
-			++_g;
+		var _g1 = 0;
+		var _g11 = this.characters;
+		while(_g1 < _g11.length) {
+			var character = _g11[_g1];
+			++_g1;
 			if(character.money < 3) {
 				var victim = this.characters[Math.floor(Math.random() * this.characters.length)];
 				var amount = Math.floor(Math.min(Math.max(0,victim.money),Math.floor(Math.random() * 6) + 1));
@@ -202,6 +193,15 @@ Main.prototype = {
 		}
 		Grammar.out([new BaseGrammarElement("Today was " + Std.string(this.day.weather) + ". There was " + sales + " trades.")]);
 		Grammar.out([new BaseGrammarElement("<br><br>")]);
+		var button;
+		var _this = window.document;
+		button = _this.createElement("button");
+		button.textContent = "New day";
+		button.onclick = function(_) {
+			console.log("Cku");
+			_g.tick();
+		};
+		window.document.getElementById("market").appendChild(button);
 		if(this.ticks < this.tickMax) this.tick();
 	}
 };

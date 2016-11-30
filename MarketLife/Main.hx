@@ -62,12 +62,7 @@ class Main {
 	}
 
 	function new(){
-		var button =  js.Browser.document.createButtonElement();
-  		button.textContent = "New day";
-		button.onclick = function(_){
-			trace("Cku");
-			tick();
-		}
+
 
 
 		Grammar.out([new BaseGrammarElement("You set up your stall and prepare to sell goods.")]);
@@ -75,7 +70,6 @@ class Main {
 			characters.push(createCharacter());
 		}
 
-		js.Browser.document.getElementById('market').appendChild(button);
 
 		tick();
 
@@ -191,6 +185,13 @@ class Main {
 			Grammar.out("A wonderful day at the market! The town will remember days like this.");
 		}*/
 		Grammar.out([new BaseGrammarElement("<br><br>")]);
+
+		var button =  js.Browser.document.createButtonElement();
+		button.textContent = "New day";
+		button.onclick = function(_){
+			tick();
+		}
+		js.Browser.document.getElementById('market').appendChild(button);
 
 		if (ticks < tickMax)
 			tick();
